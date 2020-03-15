@@ -47,7 +47,7 @@ function Post(e)
     submitMode = true;
     $("#title").val("");
     $("#text").val("");
-    $("#editOrAdd").html("Add New User")
+    $("#editOrAdd").html("Add New Post")
     title = document.getElementById("title");
     title.focus();
 }
