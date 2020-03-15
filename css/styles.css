@@ -1,0 +1,24 @@
+/**
+ * Author:  Roxana D Vasile 
+ * Date: 03/10/2020 
+ * Description: Main css file
+ */
+
+#blogWebApp
+{
+   /* margin: o auto; */
+    width: 90%;
+    margin-right: 5em;
+    margin-left:  5em;
+}
+
+.button
+{
+    margin: 0.3rem;
+}
+
+form 
+{
+    border: 4px dotted blue;
+    border-radius: 5px;
+}

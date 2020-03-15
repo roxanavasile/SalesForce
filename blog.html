@@ -1,0 +1,71 @@
+<!--
+ * Author:  Roxana D Vasile 
+ * Date: 03/10/2020 
+ * Description: Main HTML file that contains the logic for the CRUD operations.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="./css/styles.css">
+	<link rel="stylesheet" type="text/css" href="./bootstrap-4.4.1-dist/css/bootstrap-grid.css">
+    <link rel="stylesheet" type="text/css" href="./bootstrap-4.4.1-dist/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" type="text/css" href="./bootstrap-4.4.1-dist/css/bootstrap-reboot.css">
+    <link rel="stylesheet" type="text/css" href="./bootstrap-4.4.1-dist/css/bootstrap-reboot.min.css">
+    <link rel="stylesheet" type="text/css" href="./bootstrap-4.4.1-dist/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="./bootstrap-4.4.1-dist/css/bootstrap.min.css">
+</head>
+
+<body onload="GetPosts()">
+	<div id="blogWebApp">
+		<h1>My Blog</h1>
+		<button type="submit" class="button btn-success" data-toggle="collapse" onclick="Post(this)">Add new blog post</button>
+		<div id="expandCollapse" class="collapse">
+			<form class="border">
+				<p>
+					<h2 id="editOrAdd"></h2>
+				</p>
+				
+				
+				<p for="title">Title</p>
+				<input type="text" id="title">
+				
+				
+				<p for="text">Blog Post Text:</p>
+				<textarea rows="10" cols="100" id="text"></textarea>
+				
+				<p>
+					<input type="button" onclick="onSubmit(this)" value="Submit"></input>
+				</p>
+
+			</form>
+		</div>
+		
+		<div id= "container" > 
+			<!---DO NOT REMOVE; WILL CONTAIN ALL POSTS-->
+		</div>
+
+
+	</div>
+	<script src="js/scripts.js">
+	
+		 /*var baseUrl = 'https://restedblog.herokuapp.com/hackerrank/api/	';
+
+        $(document).ready(function(){
+            $.ajax({url: baseUrl
+                , success: function(result){
+                $("#list").html(result);
+            }});
+        }); */
+
+
+		
+	</script>
+	<script src="./bootstrap-4.4.1-dist/js/bootstrap.bundle.js"></script>
+    <script src="./bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./bootstrap-4.4.1-dist/js/bootstrap.js"></script>
+    <script src="./bootstrap-4.4.1-dist/js/bootstrap.min.js"></script>
+</body>
+</html>
