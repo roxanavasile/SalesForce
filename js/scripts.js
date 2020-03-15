@@ -4,8 +4,9 @@
  * Description: Main js file that contains the logic for the CRUD operations.
  */
 
-var submitMode          = true;  //adding a new user
+var addNewPostMode      = true;  //adding a new user
 var jsonId              = "";
+var api_url             = 'https://restedblog.herokuapp.com/rvasile/api/';
 
 function clearFormData() 
 {
@@ -13,38 +14,52 @@ function clearFormData()
     $("#text").val("");
 }
 
+function sortPosts(property) 
+{
+    return function (x, y) {
+        return ((x[property] === y[property]) ? 0 : ((x[property] < y[property]) ? 1 : -1));
+    };
+};
+
 
 function GetPosts()
 {
-    //clearFormData() 
-    
-    // GET all resources
-    // Ideally this function would be async and display an animations while loading.
-    fetch('https://restedblog.herokuapp.com/rvasile/api/')
-        .then(response => response.json())
-        .then(function (data) 
-        {
 
-           var tBody = $("#container")
-            tBody.empty();
-
-            data.forEach((post) => 
-            {
-                // border should be added, however the html looks like it's adding a closing <div>
-                const { id , title, text } = post;
-                tBody.append("<div id= \"container_"+ id + " class=\"border\" >");
-                tBody.append("<h1 id= \"title_"+ id +"\">" + title +" </h1>");
-                tBody.append("<p id= \"text_"+ id +"\">" + text +" </p>");
-                tBody.append("<button id= \"buttonEdit_"+ id +"\"  type=\"submit\" class=\"button btn-info\"  onclick=\"Put(this.id)\">Edit</button><button id= \"buttonEdit_"+ id +"\"  type=\"submit\" class=\"button btn-danger\" onclick=\"Delete(this.id)\">Delete</button></td>");
-                tBody.append(" </div>");
-            })
-        })
+        
+        // GET all resources
+          $.ajax
+          ({
+              url: api_url,
+              type: "GET",
+              contentType: "application/json",
+              dataType: "json",
+              success: function(data)
+              {
+                var tBody = $("#container")
+                tBody.empty();
+                data.sort(sortPosts('id'))
+                data.forEach((post) => 
+                {
+                    // border should be added, however the html looks like it's adding a closing <div>
+                    const { id , title, text } = post;
+                    tBody.append("<div id= \"container_"+ id + " class=\"border\" >");
+                    tBody.append("<h1 id= \"title_"+ id +"\">" + title +" </h1>");
+                    tBody.append("<p id= \"text_"+ id +"\">" + text +" </p>");
+                    tBody.append("<button id= \"buttonEdit_"+ id +"\"  type=\"submit\" class=\"button btn-info\"  onclick=\"Put(this.id)\">Edit</button><button id= \"buttonEdit_"+ id +"\"  type=\"submit\" class=\"button btn-danger\" onclick=\"Delete(this.id)\">Delete</button></td>");
+                    tBody.append(" </div>");
+                })
+              },
+              error: function(XMLHttpRequest, textStatus, errorThrown) 
+              { 
+                alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+              }       
+          });
 }
 
 function Post(e) 
 {
     $("#expandCollapse").removeClass("collapse")
-    submitMode = true;
+    addNewPostMode = true;
     $("#title").val("");
     $("#text").val("");
     $("#editOrAdd").html("Add New Post")
@@ -61,49 +76,43 @@ function onSubmit()
     var timestamp = new Date();
 
     //flag to determine if editor is adding a new post or editing an existing one
-    if(submitMode)
+    if(addNewPostMode)
     {
-        fetch("https://restedblog.herokuapp.com/rvasile/api/", 
-        {
-            method: "POST",
-            body: JSON.stringify
+        $.ajax
+        ({
+            type: "POST",
+            url: api_url,
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify
             ({
                 "title": title,
                 "text": text
             }),
-            headers: 
-            {
-            "Content-type": "application/json; charset=UTF-8"
-            }
-            })
-            .then(response => response.json())
-            .then(json => GetPosts())
+            success: GetPosts
+          });
             clearFormData() 
             $("#expandCollapse").addClass("collapse")
-            /*here I would like to also add logic that would update the user if the post was successfully submitted*/
     }  
     else 
     {
         var remove = window.confirm("Are you sure you want to edit this post?");
         if(remove)
         {
-            // PUT to the resource with id = 5 to change the name of task
-            fetch('https://restedblog.herokuapp.com/rvasile/api/' + jsonId , 
-            {
-                method: "PUT",
-                body: JSON.stringify
+            
+            $.ajax({
+                url: api_url + jsonId,
+                type: 'PUT',
+                data: JSON.stringify
                 ({
                     "title": title,
-                    "text": text,
-                    "timestamp" : timestamp
+                    "text": text
                 }),
-                headers:
-                {
-                "Content-type": "application/json; charset=UTF-8"
+                dataType: "application/json; charset=UTF-8",
+                success: function(data) {
+                  alert('Load was performed.');
                 }
-            })
-            .then( GetPosts )
-            .catch(console.log("error")) /*I would like this to be a function that would let the user know the update failed*/
+              });
         }
     }
 }
@@ -111,7 +120,7 @@ function onSubmit()
 function Put(e) 
 {
     $("#expandCollapse").toggleClass("collapse")
-    submitMode = false;
+    addNewPostMode = false;
 
         var id              = e.replace(/buttonEdit_/, '');
         var title           = $("#title_" + id).html();
@@ -121,7 +130,8 @@ function Put(e)
         $("#text").val(text);
     
         jsonId = id;   
-    
+        titleFocus = document.getElementById("title");
+        titleFocus.focus();
         $("#editOrAdd").html("Edit User") ;
 }
 
@@ -133,14 +143,11 @@ function Delete(e)
     {
         var id = e.replace(/buttonEdit_/, '');
     
-        fetch('https://restedblog.herokuapp.com/rvasile/api/' + id, 
-        {
-            method: 'DELETE'
-        })
-        .then( GetPosts )
+        $.ajax
+        ({
+            url: api_url + id,
+            type: 'DELETE',
+            success: GetPosts
+        });
     }
 }
-
-
-
-
